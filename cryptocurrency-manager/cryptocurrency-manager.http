@@ -1,0 +1,6 @@
+@cryptocurrency_manager_HostAddress = http://localhost:5037
+
+GET {{cryptocurrency_manager_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
