@@ -33,6 +33,9 @@ namespace cryptocurrency_manager.Services
             //Role mapping
             CreateMap<Role, RoleDto>();
 
+            // Wallet mapping
+            CreateMap<Wallet, WalletDto>().ReverseMap();
+            CreateMap<WalletUpdateDto, Wallet>();
         }
     }
 }

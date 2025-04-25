@@ -56,6 +56,8 @@ namespace cryptocurrency_manager.Services
         {
             var user = await _context.Users
                 .Include(u => u.Roles)
+                .Include(u => u.Wallet)
+                .ThenInclude(w => w.Assets)
                 .FirstOrDefaultAsync(u => u.Id == id);
             if (user == null)
             {
@@ -92,7 +94,7 @@ namespace cryptocurrency_manager.Services
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Surname, user.Username.ToString()),
+                new Claim(ClaimTypes.Name, user.Username.ToString()),
                 new Claim(ClaimTypes.Email, user.Email),
                 new Claim(ClaimTypes.Sid, Guid.NewGuid().ToString()),
                 new Claim(JwtRegisteredClaimNames.AuthTime, DateTime.Now.ToString()) // CultureInfo.InvariantCulture (?)
@@ -110,6 +112,11 @@ namespace cryptocurrency_manager.Services
         public async Task<UserDto> RegisterAsync(UserRegisterDto userDto)
         {
             var user = _mapper.Map<User>(userDto);
+            user.Wallet = new Wallet
+            {
+                Balance = 1000,
+                Assets = new List<Asset>()
+            };
             user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(userDto.Password);
             user.Roles = new List<Role>();
 
