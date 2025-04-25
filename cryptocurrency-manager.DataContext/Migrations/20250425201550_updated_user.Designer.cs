@@ -4,6 +4,7 @@ using DataContext.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace cryptocurrency_manager.DataContext.Migrations
 {
     [DbContext(typeof(CryptoDbContext))]
-    partial class CryptoDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250425201550_updated_user")]
+    partial class updated_user
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -95,7 +98,7 @@ namespace cryptocurrency_manager.DataContext.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("CryptocurrencyId")
+                    b.Property<int?>("CryptocurrencyId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("Date")
@@ -132,20 +135,6 @@ namespace cryptocurrency_manager.DataContext.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Roles");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            IsDeleted = false,
-                            Name = "Admin"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            IsDeleted = false,
-                            Name = "User"
-                        });
                 });
 
             modelBuilder.Entity("DataContext.Entities.Transaction", b =>
@@ -202,11 +191,19 @@ namespace cryptocurrency_manager.DataContext.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("RoleId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Username")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("WalletId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("WalletId");
 
                     b.ToTable("Users");
                 });
@@ -225,13 +222,7 @@ namespace cryptocurrency_manager.DataContext.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId")
-                        .IsUnique();
 
                     b.ToTable("Wallets");
                 });
@@ -272,13 +263,9 @@ namespace cryptocurrency_manager.DataContext.Migrations
 
             modelBuilder.Entity("DataContext.Entities.History", b =>
                 {
-                    b.HasOne("DataContext.Entities.Cryptocurrency", "Cryptocurrency")
-                        .WithMany("Histories")
-                        .HasForeignKey("CryptocurrencyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Cryptocurrency");
+                    b.HasOne("DataContext.Entities.Cryptocurrency", null)
+                        .WithMany("History")
+                        .HasForeignKey("CryptocurrencyId");
                 });
 
             modelBuilder.Entity("DataContext.Entities.Transaction", b =>
@@ -300,15 +287,15 @@ namespace cryptocurrency_manager.DataContext.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("DataContext.Entities.Wallet", b =>
+            modelBuilder.Entity("DataContext.Entities.User", b =>
                 {
-                    b.HasOne("DataContext.Entities.User", "User")
-                        .WithOne("Wallet")
-                        .HasForeignKey("DataContext.Entities.Wallet", "UserId")
+                    b.HasOne("DataContext.Entities.Wallet", "Wallet")
+                        .WithMany()
+                        .HasForeignKey("WalletId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.Navigation("Wallet");
                 });
 
             modelBuilder.Entity("RoleUser", b =>
@@ -328,15 +315,12 @@ namespace cryptocurrency_manager.DataContext.Migrations
 
             modelBuilder.Entity("DataContext.Entities.Cryptocurrency", b =>
                 {
-                    b.Navigation("Histories");
+                    b.Navigation("History");
                 });
 
             modelBuilder.Entity("DataContext.Entities.User", b =>
                 {
                     b.Navigation("Transactions");
-
-                    b.Navigation("Wallet")
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("DataContext.Entities.Wallet", b =>

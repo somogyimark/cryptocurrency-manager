@@ -13,7 +13,7 @@ namespace DataContext.Entities
         public string Symbol { get; set; }
         public decimal Price { get; set; }
         public decimal Amount { get; set; }
-        public List<History> History { get; set; }
+        public List<History> Histories { get; set; }
 
     }
 }

@@ -1,8 +1,12 @@
 
 using cryptocurrency_manager.Services;
 using DataContext.Context;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.IdentityModel.Tokens.Jwt;
+using System.Text;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,7 +20,7 @@ builder.Services.AddOpenApi();
 // Connection String
 builder.Services.AddDbContext<CryptoDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("CryptoManagerContext")));
 
-//builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICryptoService, CryptoService>();
 builder.Services.AddHostedService<PriceUpdateService>();
 //builder.Services.AddScoped<IHistoryService, HistoryService>();
@@ -24,6 +28,30 @@ builder.Services.AddHostedService<PriceUpdateService>();
 //builder.Services.AddScoped<ITransactionService, TransactionService>();
 
 
+// Add JWT Authentication
+JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+builder.Services
+    .AddAuthentication(options =>
+    {
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer(options =>
+    {
+        options.RequireHttpsMetadata = false;
+        options.SaveToken = false;
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
+            ClockSkew = TimeSpan.Zero
+        };
+    });
 
 
 

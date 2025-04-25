@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using DataContext.Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,10 +19,15 @@ namespace DataContext.Context
         public DbSet<Entities.Transaction> Transactions { get; set; }
         public DbSet<Entities.User> Users { get; set; }
         public DbSet<Entities.Wallet> Wallets { get; set; }
+        public DbSet<Entities.Role> Roles { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            // Add any additional configuration here
+
+            modelBuilder.Entity<Role>().HasData(
+                new Role { Id = 1, Name = "Admin" },
+                new Role { Id = 2, Name = "User" }
+            );
         }
     }
 }

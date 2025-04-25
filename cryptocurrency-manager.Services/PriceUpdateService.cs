@@ -54,7 +54,7 @@ namespace cryptocurrency_manager.Services
                     await _context.SaveChangesAsync(stoppingToken);
                     
                 }
-                Thread.Sleep(3000);
+                Thread.Sleep(30000);
             }
         }
     }

@@ -32,7 +32,7 @@ namespace cryptocurrency_manager.Services
         public Task<CryptoDto> AddCryptocurrencyAsync(CryptoCreateDto cryptoCreateDto)
         {
             var crypto = _mapper.Map<Cryptocurrency>(cryptoCreateDto);
-            crypto.History = new List<History>();
+            crypto.Histories = new List<History>();
 
             _context.Cryptocurrencies.Add(crypto);
             _context.SaveChanges();
@@ -79,7 +79,7 @@ namespace cryptocurrency_manager.Services
         {
             var crypto = await _context.Cryptocurrencies
                 .Where(c => !c.IsDeleted)
-                .Include(c => c.History)
+                .Include(c => c.Histories)
                 .FirstOrDefaultAsync(c => c.Id == id);
             if (crypto == null)
             {

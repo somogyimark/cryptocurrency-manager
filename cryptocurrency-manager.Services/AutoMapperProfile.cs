@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace cryptocurrency_manager.Services
 {
     public class AutoMapperProfile : Profile
@@ -22,6 +23,15 @@ namespace cryptocurrency_manager.Services
 
             // History mapping
             CreateMap<History, HistoryDto>();
+
+            // User mapping
+            CreateMap<User, UserDto>().ReverseMap();
+            CreateMap<UserRegisterDto, User>();
+            CreateMap<UserLoginDto, User>();
+            CreateMap<UserUpdateDto, User>();
+
+            //Role mapping
+            CreateMap<Role, RoleDto>();
 
         }
     }
