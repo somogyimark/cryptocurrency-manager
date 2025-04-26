@@ -43,6 +43,7 @@ namespace cryptocurrency_manager.Services
                             crypto.Price += crypto.Price * changePercent / 100;
                             var history = new History
                             {
+                                CryptocurrencyId = crypto.Id,
                                 Price = crypto.Price,
                                 Date = DateTime.UtcNow
                             };

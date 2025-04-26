@@ -16,7 +16,7 @@ namespace DataContext.Context
         public DbSet<Entities.Cryptocurrency> Cryptocurrencies { get; set; }
         public DbSet<Entities.Asset> Assets { get; set; }
         public DbSet<Entities.History> Histories { get; set; }
-        public DbSet<Entities.Transaction> Transactions { get; set; }
+        public DbSet<Entities.Trade> Transactions { get; set; }
         public DbSet<Entities.User> Users { get; set; }
         public DbSet<Entities.Wallet> Wallets { get; set; }
         public DbSet<Entities.Role> Roles { get; set; }

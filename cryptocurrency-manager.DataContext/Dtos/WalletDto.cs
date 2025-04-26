@@ -10,7 +10,7 @@ namespace cryptocurrency_manager.DataContext.Dtos
     public class WalletDto
     {
         public decimal Balance { get; set; }
-        public List<Asset> Assets { get; set; }
+        public List<Asset>? Assets { get; set; }
     }
 
     public class WalletUpdateDto

@@ -17,7 +17,7 @@ namespace DataContext.Entities
 
         public List<Role> Roles { get; set; }
         public Wallet Wallet { get; set; }
-        public List<Transaction> Transactions { get; set; }
+        public List<Trade> Transactions { get; set; }
     }
     
     

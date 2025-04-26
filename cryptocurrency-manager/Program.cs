@@ -25,7 +25,7 @@ builder.Services.AddScoped<ICryptoService, CryptoService>();
 builder.Services.AddHostedService<PriceUpdateService>();
 //builder.Services.AddScoped<IHistoryService, HistoryService>();
 builder.Services.AddScoped<IWalletService, WalletService>();
-//builder.Services.AddScoped<ITransactionService, TransactionService>();
+builder.Services.AddScoped<ITradeService, TradeService>();
 
 
 // Add JWT Authentication

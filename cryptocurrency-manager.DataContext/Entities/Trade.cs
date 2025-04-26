@@ -6,19 +6,19 @@ using System.Threading.Tasks;
 
 namespace DataContext.Entities
 {
-    public enum TransactionType
+    public enum TradeType
     {
         Buy,
-        Sell,
-        Transfer
+        Sell
     }
-    public class Transaction: AbstractEntity
+    public class Trade: AbstractEntity
     {
         public int UserId { get; set; }
         public int CryptocurrencyId { get; set; }
         public decimal Amount { get; set; }
-        public DateTime TransactionDate { get; set; }
-        public TransactionType TransactionType { get; set; } // e.g., "buy", "sell"
+        public decimal Price { get; set; }
+        public DateTime TradeDate { get; set; }
+        public TradeType TradeType { get; set; }
 
 
         public User User { get; set; }
