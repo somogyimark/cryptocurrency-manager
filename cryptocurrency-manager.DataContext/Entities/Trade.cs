@@ -17,6 +17,7 @@ namespace DataContext.Entities
         public int CryptocurrencyId { get; set; }
         public decimal Amount { get; set; }
         public decimal Price { get; set; }
+        public decimal TotalPrice { get; set; }
         public DateTime TradeDate { get; set; }
         public TradeType TradeType { get; set; }
 

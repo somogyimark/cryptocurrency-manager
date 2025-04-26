@@ -35,11 +35,18 @@ namespace cryptocurrency_manager.Services
 
             // Wallet mapping
             CreateMap<Wallet, WalletDto>().ReverseMap();
+            CreateMap<Wallet, PortfolioDto>();
             CreateMap<WalletUpdateDto, Wallet>();
 
             // Trade mapping
-            CreateMap<Trade, TradeDto>().ReverseMap();
+            CreateMap<Trade, TradeDto>()
+                    .ForMember(dest => dest.TradeDate,
+               opt => opt.MapFrom(src => src.TradeDate.ToString("yyyy-MM-dd HH:mm")))
+                    .ReverseMap();
             CreateMap<Trade, TradeDetailedDto>();
+
+            // Asset mapping
+            CreateMap<Asset, AssetDto>().ReverseMap();
         }
     }
 }

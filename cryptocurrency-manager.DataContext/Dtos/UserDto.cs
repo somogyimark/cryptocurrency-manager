@@ -14,7 +14,6 @@ namespace cryptocurrency_manager.DataContext.Dtos
         public int Id { get; set; }
         public string Username { get; set; }
         public string Email { get; set; }
-        public WalletDto Wallet { get; set; }
         public IList<RoleDto> Roles { get; set; }
     }
 

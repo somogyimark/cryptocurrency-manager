@@ -13,6 +13,7 @@ namespace cryptocurrency_manager.Services
     public interface IWalletService
     {
         Task<WalletDto> GetWalletByUserIdAsync(int id);
+        Task<PortfolioDto> GetPortfolioByUserIdAsync(int id);
         Task<bool> DeleteWalletAsync(int id);
         Task<WalletDto> UpdateWalletAsync(int id, WalletUpdateDto walletUpdateDto);
     }
@@ -50,12 +51,27 @@ namespace cryptocurrency_manager.Services
         public async Task<WalletDto> GetWalletByUserIdAsync(int id)
         {
             var wallet = await _context.Wallets
+                .Include(w => w.Assets)
                 .FirstOrDefaultAsync(w => w.UserId == id);
             if (wallet == null)
             {
                 throw new KeyNotFoundException("Wallet not found.");
             }
             return _mapper.Map<WalletDto>(wallet);
+
+        }
+
+
+        public async Task<PortfolioDto> GetPortfolioByUserIdAsync(int id)
+        {
+            var wallet = await _context.Wallets
+                .Include(w => w.Assets)
+                .FirstOrDefaultAsync(w => w.UserId == id);
+            if (wallet == null)
+            {
+                throw new KeyNotFoundException("Wallet not found.");
+            }
+            return _mapper.Map<PortfolioDto>(wallet);
 
         }
 

@@ -30,6 +30,18 @@ namespace cryptocurrency_manager.Controllers
         }
 
         [HttpGet]
+        [Route("GET/api/portfolio/{userId}")]
+        public async Task<IActionResult> GetPortfolioByUserId(int userId)
+        {
+            var wallets = await _walletService.GetPortfolioByUserIdAsync(userId);
+            if (wallets == null)
+            {
+                return NotFound();
+            }
+            return Ok(wallets);
+        }
+
+        [HttpGet]
         [Route("GET/api/mywallet")]
         public async Task<IActionResult> GetMyWallet()
         {

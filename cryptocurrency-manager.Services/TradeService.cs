@@ -55,6 +55,12 @@ namespace cryptocurrency_manager.Services
 
                 user.Wallet.Balance -= totalPrice;
 
+                crypto.Amount -= amount;
+                if (crypto.Amount < 0)
+                    throw new Exception("Not enough cryptocurrency available.");
+
+
+
 
 
                 var asset = user.Wallet.Assets.FirstOrDefault(a => a.CryptoId == cryptoId);
@@ -82,7 +88,8 @@ namespace cryptocurrency_manager.Services
                 _cryptoDbContext.Transactions.Add(new Trade
                 {
                     CryptocurrencyId = crypto.Id,
-                    Price = totalPrice,
+                    Price = crypto.Price,
+                    TotalPrice = totalPrice,
                     TradeDate = DateTime.UtcNow,
                     Amount = amount,
                     UserId = user.Id,
@@ -126,10 +133,12 @@ namespace cryptocurrency_manager.Services
 
                 decimal totalPrice = crypto.Price * amount;
 
-                // Hozzáadjuk a pénzt a wallethez
-                user.Wallet.Balance += totalPrice;
 
-                // Levonjuk a kripto mennyiséget
+                user.Wallet.Balance += totalPrice;
+                
+                crypto.Amount += amount;
+
+
                 asset.Amount -= amount;
 
                 if (asset.Amount == 0)
@@ -137,11 +146,11 @@ namespace cryptocurrency_manager.Services
                     _cryptoDbContext.Assets.Remove(asset);
                 }
 
-                // Naplózzuk a tranzakciót
                 _cryptoDbContext.Transactions.Add(new Trade
                 {
                     CryptocurrencyId = crypto.Id,
                     Price = crypto.Price,
+                    TotalPrice = totalPrice,
                     TradeDate = DateTime.UtcNow,
                     Amount = amount,
                     UserId = user.Id,
