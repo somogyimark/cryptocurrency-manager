@@ -31,7 +31,7 @@ namespace cryptocurrency_manager.DataContext.Dtos
         [MinLength(6)]
         public string Password { get; set; }
 
-        public IList<int> RolesIds { get; set; }
+        //public IList<int> RolesIds { get; set; }
     }
 
     public class UserLoginDto

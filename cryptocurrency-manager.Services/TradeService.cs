@@ -75,7 +75,8 @@ namespace cryptocurrency_manager.Services
                         Cryptocurrency = crypto,
                         WalletId = user.Wallet.Id,
                         Amount = amount,
-                        Price = totalPrice,
+                        Price = crypto.Price,
+                        TotalPrice = totalPrice,
                         Wallet = user.Wallet
                     };
                     _cryptoDbContext.Assets.Add(asset);
@@ -140,6 +141,7 @@ namespace cryptocurrency_manager.Services
 
 
                 asset.Amount -= amount;
+
 
                 if (asset.Amount == 0)
                 {

@@ -68,6 +68,56 @@ namespace cryptocurrency_manager.Controllers
             return Ok(user);
         }
 
+        [HttpGet]
+        [Route("GET/api/profit/{userId}")]
+        public async Task<IActionResult> GetUserProfit(int userId)
+        {
+            var profit = await _userService.GetUserProfitAsync(userId);
+            if (profit == null)
+            {
+                return NotFound();
+            }
+            return Ok(profit);
+        }
+
+        [HttpGet]
+        [Route("GET/api/myprofit")]
+        public async Task<IActionResult> GetMyProfit()
+        {
+            var userId = int.Parse(User.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value);
+            var profit = await _userService.GetUserProfitAsync(userId);
+            if (profit == null)
+            {
+                return NotFound();
+            }
+            return Ok(profit);
+        }
+
+        [HttpGet]
+        [Route("GET/api/profit/details/{userId}")]
+        public async Task<IActionResult> GetUserDetailedProfit(int userId)
+        {
+            var profitDetails = await _userService.GetUserDetailedProfitAsync(userId);
+            if (profitDetails == null)
+            {
+                return NotFound();
+            }
+            return Ok(profitDetails);
+        }
+
+        [HttpGet]
+        [Route("GET/api/myprofit/details")]
+        public async Task<IActionResult> GetMyDetailedProfit()
+        {
+            var userId = int.Parse(User.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value);
+            var profitDetails = await _userService.GetUserDetailedProfitAsync(userId);
+            if (profitDetails == null)
+            {
+                return NotFound();
+            }
+            return Ok(profitDetails);
+        }
+
         [HttpPut]
         [Route("PUT/api/users/{userId}")]
         public async Task<IActionResult> UpdateUser(int userId, [FromBody] UserUpdateDto userUpdateDto)

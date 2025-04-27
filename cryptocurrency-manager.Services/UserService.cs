@@ -22,6 +22,8 @@ namespace cryptocurrency_manager.Services
         Task<string> LoginAsync(UserLoginDto userLoginDto);
         Task<UserDto> GetUserByIdAsync(int id);
         Task<UserDto> UpdateUserAsync(int userid, UserUpdateDto userUpdateDto);
+        Task<decimal> GetUserProfitAsync(int userId);
+        Task<CryptoProfitResponse> GetUserDetailedProfitAsync(int userId);
         Task<bool> DeleteUserAsync(int id);
     }
     public class UserService : IUserService
@@ -58,6 +60,7 @@ namespace cryptocurrency_manager.Services
                 .Include(u => u.Roles)
                 .Include(u => u.Wallet)
                 .ThenInclude(w => w.Assets)
+                .Where(u => u.IsDeleted == false)
                 .FirstOrDefaultAsync(u => u.Id == id);
             if (user == null)
             {
@@ -128,22 +131,22 @@ namespace cryptocurrency_manager.Services
                 throw new InvalidOperationException("User with this username or email already exists.");
             }
 
-            if (userDto.RolesIds != null)
-            {
-                foreach (var roleId in userDto.RolesIds)
-                {
-                    var role = await _context.Roles.FirstOrDefaultAsync(r => r.Id == roleId);
-                    if (role != null)
-                    {
-                        user.Roles.Add(role);
-                    }
-                }
-            }
+            //if (userDto.RolesIds != null)
+            //{
+            //    foreach (var roleId in userDto.RolesIds)
+            //    {
+            //        var role = await _context.Roles.FirstOrDefaultAsync(r => r.Id == roleId);
+            //        if (role != null)
+            //        {
+            //            user.Roles.Add(role);
+            //        }
+            //    }
+            //}
 
             if (!user.Roles.Any())
             {
-                var defaultRole = await GetDefaultCustomerAsync();
-                user.Roles.Add(defaultRole); // "Customer" role
+                var defaultRole = await GetDefaultRoleAsync();
+                user.Roles.Add(defaultRole);
             }
 
             await _context.Users.AddAsync(user);
@@ -152,12 +155,12 @@ namespace cryptocurrency_manager.Services
             return _mapper.Map<UserDto>(user);
         }
 
-        private async Task<Role> GetDefaultCustomerAsync()
+        private async Task<Role> GetDefaultRoleAsync()
         {
-            var defaultRole = await _context.Roles.FirstOrDefaultAsync(r => r.Name == "Customer");
+            var defaultRole = await _context.Roles.FirstOrDefaultAsync(r => r.Name == "User");
             if (defaultRole == null)
             {
-                defaultRole = new Role { Name = "Customer" };
+                defaultRole = new Role { Name = "User" };
                 await _context.Roles.AddAsync(defaultRole);
                 await _context.SaveChangesAsync();
             }
@@ -188,6 +191,57 @@ namespace cryptocurrency_manager.Services
             _context.Users.Update(user);
             await _context.SaveChangesAsync();
             return _mapper.Map<UserDto>(user);
+        }
+
+        public async Task<decimal> GetUserProfitAsync(int userId)
+        {
+            var wallet = await _context.Wallets
+                .Where(w => w.UserId == userId)
+                .Include(w => w.Assets)
+                .ThenInclude(a => a.Cryptocurrency)
+                .Where(w => w.IsDeleted == false)
+                .FirstOrDefaultAsync();
+
+            if (wallet == null || wallet.Assets == null || !wallet.Assets.Any())
+            {
+                throw new KeyNotFoundException("No wallet or assets found for the user.");
+            }
+
+            decimal totalProfit = wallet.Assets.Sum(a =>
+                (a.Cryptocurrency.Price - a.Price) * a.Amount);
+
+            return totalProfit;
+        }
+
+        public async Task<CryptoProfitResponse> GetUserDetailedProfitAsync(int userId)
+        {
+            var wallet = await _context.Wallets
+                .Where(w => w.UserId == userId)
+                .Include(w => w.Assets)
+                .ThenInclude(a => a.Cryptocurrency)
+                .FirstOrDefaultAsync();
+
+            if (wallet == null || wallet.Assets == null || !wallet.Assets.Any())
+            {
+                throw new KeyNotFoundException("No wallet or assets found for the user.");
+            }
+
+            var profitDetails = wallet.Assets.Select(a => new CryptoProfitDto
+            {
+                Symbol = a.Cryptocurrency.Symbol,
+                Amount = a.Amount,
+                PurchasePrice = a.Price,
+                CurrentPrice = a.Cryptocurrency.Price,
+                Profit = (a.Cryptocurrency.Price - a.Price) * a.Amount
+            }).ToList();
+
+            decimal totalProfit = profitDetails.Sum(d => d.Profit);
+
+            return new CryptoProfitResponse
+            {
+                CryptoProfits = profitDetails,
+                TotalProfit = totalProfit
+            };
         }
     }
 }

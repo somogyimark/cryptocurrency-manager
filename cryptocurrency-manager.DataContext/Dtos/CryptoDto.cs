@@ -27,6 +27,21 @@ namespace cryptocurrency_manager.DataContext.Dtos
     public class CryptoHistoryDto
     {
         public string Name { get; set; }
-        public List<HistoryDto> History { get; set; }
+        public List<HistoryDto> Histories { get; set; }
+    }
+
+    public class CryptoProfitDto
+    {
+        public string Symbol { get; set; }
+        public decimal Amount { get; set; }
+        public decimal PurchasePrice { get; set; }
+        public decimal CurrentPrice { get; set; }
+        public decimal Profit { get; set; }
+    }
+
+    public class CryptoProfitResponse
+    {
+        public List<CryptoProfitDto> CryptoProfits { get; set; }
+        public decimal TotalProfit { get; set; }
     }
 }
