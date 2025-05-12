@@ -1,4 +1,5 @@
 ﻿using cryptocurrency_manager.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -42,6 +43,7 @@ namespace cryptocurrency_manager.Controllers
 
         [HttpGet]
         [Route("GET /api/mytransactions")]
+        [Authorize(Roles = "User")]
         public async Task<IActionResult> GetMyTradeHistory()
         {
             var userId = int.Parse(User.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value);

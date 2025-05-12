@@ -2,6 +2,7 @@
 using cryptocurrency_manager.DataContext.Dtos;
 using cryptocurrency_manager.Services;
 using DataContext.Context;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
@@ -43,6 +44,8 @@ namespace cryptocurrency_manager.Controllers
 
         [HttpGet]
         [Route("GET/api/mywallet")]
+        [Authorize(Roles = "User")]
+
         public async Task<IActionResult> GetMyWallet()
         {
             var userId = int.Parse(User.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value);
@@ -72,6 +75,8 @@ namespace cryptocurrency_manager.Controllers
 
         [HttpPut]
         [Route("PUT/api/mywallet")]
+        [Authorize(Roles = "User")]
+
         public async Task<IActionResult> UpdateMyWallet([FromBody] WalletUpdateDto walletUpdateDto)
         {
             var userId = int.Parse(User.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value);
@@ -101,6 +106,8 @@ namespace cryptocurrency_manager.Controllers
 
         [HttpDelete]
         [Route("DELETE/api/mywallet")]
+        [Authorize(Roles = "User")]
+
         public async Task<IActionResult> DeleteMyWallet()
         {
             var userId = int.Parse(User.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value);

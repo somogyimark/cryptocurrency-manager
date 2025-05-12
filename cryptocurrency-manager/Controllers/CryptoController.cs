@@ -47,6 +47,7 @@ namespace cryptocurrency_manager.Controllers
 
         [HttpPost]
         [Route("POST/api/cryptos")]
+
         public async Task<IActionResult> AddCryptocurrency([FromBody] CryptoCreateDto cryptoCreateDto)
         {
             if (cryptoCreateDto == null)

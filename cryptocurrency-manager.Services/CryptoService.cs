@@ -99,6 +99,14 @@ namespace cryptocurrency_manager.Services
                 throw new Exception("Cryptocurrency not found");
             }
             crypto.Price = price;
+            var history = new History
+            {
+                CryptocurrencyId = crypto.Id,
+                Price = crypto.Price,
+                Date = DateTime.UtcNow
+            };
+
+            await _context.Histories.AddAsync(history);
             _context.Cryptocurrencies.Update(crypto);
             await _context.SaveChangesAsync();
             return _mapper.Map<CryptoDto>(crypto);

@@ -131,6 +131,12 @@ using (var scope = app.Services.CreateScope())
             new Cryptocurrency { Name = "Algorand", Symbol = "ALGO", Price = 0.2M, Amount = 8000000M, IsDeleted = false }
         };
 
+        var adminRole = await dbContext.Roles.FirstOrDefaultAsync(r => r.Name == "Admin");
+        var userRole = await dbContext.Roles.FirstOrDefaultAsync(r => r.Name == "User");
+
+        await dbContext.Users.AddAsync(
+            new User { Username = "Admin", Email = "admin@example.com", PasswordHash = "$2a$11$IrrawI/SI1LdrOYys5JnhOO.rqB/3uJf8idu47APTu03fKKvCDOz6", Roles = new List<Role> {adminRole, userRole}, Wallet = new Wallet { Balance = 1000, Assets = new List<Asset>() } , IsDeleted = false });
+
         dbContext.Cryptocurrencies.AddRange(cryptocurrencies);
         dbContext.SaveChanges();
     }

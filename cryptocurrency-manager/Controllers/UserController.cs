@@ -1,5 +1,6 @@
 ﻿using cryptocurrency_manager.DataContext.Dtos;
 using cryptocurrency_manager.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -57,6 +58,8 @@ namespace cryptocurrency_manager.Controllers
 
         [HttpGet]
         [Route("GET/api/myuser")]
+        [Authorize(Roles = "User")]
+
         public async Task<IActionResult> GetMyUser()
         {
             var userId = int.Parse(User.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value);
@@ -82,6 +85,8 @@ namespace cryptocurrency_manager.Controllers
 
         [HttpGet]
         [Route("GET/api/myprofit")]
+        [Authorize(Roles = "User")]
+
         public async Task<IActionResult> GetMyProfit()
         {
             var userId = int.Parse(User.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value);
@@ -107,6 +112,8 @@ namespace cryptocurrency_manager.Controllers
 
         [HttpGet]
         [Route("GET/api/myprofit/details")]
+        [Authorize(Roles = "User")]
+
         public async Task<IActionResult> GetMyDetailedProfit()
         {
             var userId = int.Parse(User.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value);
@@ -136,6 +143,8 @@ namespace cryptocurrency_manager.Controllers
 
         [HttpPut]
         [Route("PUT/api/user")]
+        [Authorize(Roles = "User")]
+
         public async Task<IActionResult> UpdateMyUser([FromBody] UserUpdateDto userUpdateDto)
         {
             if (userUpdateDto == null)
@@ -166,6 +175,8 @@ namespace cryptocurrency_manager.Controllers
 
         [HttpDelete]
         [Route("DELETE/api/user")]
+        [Authorize(Roles = "User")]
+
         public async Task<IActionResult> DeleteMyUser()
         {
             var userId = int.Parse(User.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value);
